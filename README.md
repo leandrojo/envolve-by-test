@@ -6,7 +6,37 @@
 
 AI-powered test-driven code evolution for TypeScript/JavaScript projects.
 
-Uses AI agents (Claude Code, Gemini CLI, Codex CLI) to autonomously improve codebases through tests. The loop: **baseline → gap analysis → prompt → agent writes tests, discovers bugs, fixes, commits → verification**.
+## The Concept: Test-Driven Code Evolution
+
+The core idea is to use **tests as discovery instruments**, not just coverage metrics.
+
+### The Problem
+
+Every codebase accumulates blind spots — areas with complex logic that were never truly tested. These dormant bugs (edge cases, state violations, missing error handling) only surface in production, when the cost is high.
+
+Writing tests manually to cover everything is expensive in time and cognitive effort. And even when tests are written, the tendency is to test the "happy path", not the dark corners of the code.
+
+### The Approach
+
+The proposal is to create a **continuous evolution loop** where an AI agent:
+
+1. **Analyzes** the codebase and identifies gaps — complex files without tests, shallow tests, entire uncovered domains
+2. **Formulates a hypothesis** — "this code snippet likely has a bug in this edge condition"
+3. **Writes a test** that tries to prove that hypothesis
+4. **If the test fails** (confirming the bug), **fixes the production code**
+5. **Verifies** that no regressions were introduced
+6. **Documents** what was found to give context to the next session
+
+Each session attacks **a single weakness**, in a focused and incremental way. Quality is evaluated across three dimensions: **correctness** (logic and edge cases), **resilience** (error handling), and **consistency** (patterns across modules).
+
+### The Philosophy
+
+- **Tests are investigation tools**, not coverage bureaucracy
+- **Incremental and verifiable improvement** — each cycle produces an atomic commit (test + fix together)
+- **The agent thinks like a senior QA**, not a boilerplate generator — it hunts real bugs, not empty coverage
+- **Built-in safety** — baseline tracking prevents regressions, protected files can't be touched, and everything is revertible
+
+In short: an AI agent can **autonomously evolve** codebase quality, using tests as the mechanism for discovery and proof — an automated and intelligent "red-green-refactor" loop.
 
 ## Quick Start
 
@@ -73,12 +103,12 @@ Each session follows 6 steps:
 
 ```
 ┌─────────────┐     ┌──────────────┐     ┌────────┐
-│  1. Baseline │────▶│ 2. Gap       │────▶│ 3.     │
+│  1. Baseline │────>│ 2. Gap       │────>│ 3.     │
 │  (run tests) │     │    Analysis  │     │ Prompt │
 └─────────────┘     └──────────────┘     └───┬────┘
                                              │
-┌─────────────┐     ┌──────────────┐     ┌───▼────┐
-│  6. Journal  │◀────│ 5. Verify    │◀────│ 4. AI  │
+┌─────────────┐     ┌──────────────┐     ┌───v────┐
+│  6. Journal  │<────│ 5. Verify    │<────│ 4. AI  │
 │  (document)  │     │    (delta)   │     │ Agent  │
 └─────────────┘     └──────────────┘     └────────┘
 ```
@@ -146,16 +176,6 @@ The `--model` flag determines which CLI agent to invoke:
 | *(default)* | Claude Code | `claude` |
 
 Each provider must be installed and authenticated separately. envolve-by-test does not store or manage any credentials — it delegates to the installed CLI tools.
-
-## How It Works
-
-This tool extracts a pattern proven in production: autonomous AI agents that evolve codebases through test-driven quality. The approach finds real bugs including:
-
-- State machine guard violations
-- Billing policy override bugs
-- Time formatting edge cases with fractional seconds
-
-The key insight: **tests as discovery tools**, not just coverage metrics. Each session makes ONE focused improvement, documents what was learned, and suggests what to explore next.
 
 ## Contributing
 
