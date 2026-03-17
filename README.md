@@ -101,16 +101,14 @@ Each session follows 6 steps:
 5. **Verification** — Re-run tests, compute delta (new tests, regressions)
 6. **Journal** — Agent documents what was discovered in `.evolve/JOURNAL.md`
 
-```
-┌─────────────┐     ┌──────────────┐     ┌────────┐
-│  1. Baseline │────>│ 2. Gap       │────>│ 3.     │
-│  (run tests) │     │    Analysis  │     │ Prompt │
-└─────────────┘     └──────────────┘     └───┬────┘
-                                             │
-┌─────────────┐     ┌──────────────┐     ┌───v────┐
-│  6. Journal  │<────│ 5. Verify    │<────│ 4. AI  │
-│  (document)  │     │    (delta)   │     │ Agent  │
-└─────────────┘     └──────────────┘     └────────┘
+```mermaid
+graph LR
+    A["1. Baseline\n(run tests)"] --> B["2. Gap Analysis\n(rank by complexity)"]
+    B --> C["3. Prompt\n(build context)"]
+    C --> D["4. AI Agent\n(test + fix + commit)"]
+    D --> E["5. Verification\n(compute delta)"]
+    E --> F["6. Journal\n(document findings)"]
+    F -.->|"next session"| A
 ```
 
 ## What Gets Created
